@@ -11,9 +11,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.kafka.support.serializer.JsonSerializer;
 
-//@Configuration
-public class KafkaProducerConfig {
+import com.timpamungkas.kafka.model.Person;
+
+@Configuration
+public class KafkaProducerConfigPerson {
 
   @Value("${kafka.bootstrap-servers}")
   private String bootstrapServers;
@@ -24,18 +27,18 @@ public class KafkaProducerConfig {
     // list of host:port pairs used for establishing the initial connections to the Kakfa cluster
     props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
     props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-    props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+    props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
 
     return props;
   }
 
   @Bean
-  public ProducerFactory<String, String> producerFactory() {
+  public ProducerFactory<String, Person> producerFactory() {
     return new DefaultKafkaProducerFactory<>(producerConfigs());
   }
 
   @Bean
-  public KafkaTemplate<String, String> kafkaTemplate() {
+  public KafkaTemplate<String, Person> kafkaTemplate() {
     return new KafkaTemplate<>(producerFactory());
   }
 
